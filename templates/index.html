@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Blog Generator</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', /* 'class' or 'media', we use 'class' to enable dark mode manually */
+        }
+    </script>
 
     <style>
         @keyframes rotate {
@@ -46,30 +52,34 @@
             animation-iteration-count:  infinite;
             animation-timing-function: linear; 
         }
+
+        @media screen and (max-width: 420px) {
+            .navbar{flex-direction: column;}
+        }
     </style>
 </head>
-<body class="flex flex-col min-h-screen bg-gray-100 font-sans antialiased">
+<body class="flex flex-col min-h-screen bg-gray-100 font-sans antialiased dark:bg-black">
     <!-- Navbar -->
-    <nav class="bg-blue-800 p-4 text-white flex justify-between">
+    <nav class="bg-blue-800 p-4 text-white flex justify-between navbar">
         <div>
             <h1 class="text-3xl font-bold">AI Blog Generator</h1>
         </div>
-        <div>
-            <a href="#" class="text-white border p-1 rounded hover:underline mx-4">Welcome {{ user.username }}</a>
-            <a href="/blog-list" class="text-white border p-1 rounded hover:underline mx-4">Saved Blog Posts</a>
-            <a href="#" class="text-white border p-1 rounded hover:underline mx-4">Logout</a>
+        <div class="flex gap-2 white items-center whitespace-nowrap flex-wrap">
+            <a href="#" class="text-white border p-1 rounded hover:underline">Welcome {{ user.username }}</a>
+            <a href="/blog-list" class="text-white border p-1 rounded hover:underline">Saved Blog Posts</a>
+            <a href="#" class="text-white border p-1 rounded hover:underline">Logout</a>
         </div>
     </nav>
     <br>
     <br>
     <!-- Main -->
      <div class="flex-grow container mx-auto mt-10 px-4 sm:px-0">
-        <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md transition-transform transform hover:scale-105 flex flex-col">
+        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md transition-transform transform hover:scale-105 flex flex-col">
 
             <!-- Introduction section -->
             <div class="text-center">
-                <h2 class="text-2xl font-semibold mb-4">Welcome to AI Blog Generator</h2>
-                <p class="text-gray-700">
+                <h2 class="text-2xl font-semibold dark:text-gray-100 mb-4">Welcome to AI Blog Generator</h2>
+                <p class="text-gray-700 dark:text-gray-300">
                     Generate high-quality blog articles from YouTube videos using Artificial Intelligence.
                     Simply enter the link to the YouTube video below and let the AI create the content for you!
                 </p>
@@ -78,10 +88,10 @@
             <br>
 
             <!-- YouTube section -->
-            <div>
+            <div class="dark:text-gray-100">
                 <h2 class="text-xl mb-4 font-semibold">Enter YouTube Video Link</h2>
-                <div class="flex space-x-4">
-                    <input id="youtubeLink" type="url" placeholder="Paste YouTube Link..." class="flex-grow p-2 border border-blue-600 rounded-md">
+                <div class="flex">
+                    <input id="youtubeLink" type="url" placeholder="Paste YouTube Link..." class="flex-grow p-2 border border-blue-600 rounded-l-md">
                     <button id="generateBlogButton" class="bg-blue-600 text-white px-4 py-2 rounded-r-md hover:bg-blue-800 transition-colors">Generate</button>
                 </div>
             </div>
@@ -92,7 +102,7 @@
 
 
             <!-- Generated Blog Display Section -->
-            <section class="mt-10 flex-grow">
+            <section class="mt-10 flex-grow dark:text-gray-100">
                 <h2 class="text-xl mb-4 font-semibold">Generated Blog Article</h2>
                 <div id="blogContent" class="mt-2 text-gray-700 space-y-4">
                     
@@ -101,11 +111,53 @@
         </div>
      </div>
 
-     <footer class="text-center p-4 text-black mt-6">
-        Powered by <a href="https://www.linkedin.com/in/murilo-meranca/">Murilo Meranca</a>
-     </footer>
+    <footer class="text-center p-4 text-black mt-6 dark:text-white">
+        <button id="switch-theme">
+            <!-- Sun icon -->
+            <!-- <svg width="30" height="30" id="light-icon">
+                <circle cx="15" cy="15" r="6" fill="currentColor" />
+            
+                <line
+                id="ray"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                x1="15"
+                y1="1"
+                x2="15"
+                y2="4"
+                ></line>
+        
+                <use href="#ray" transform="rotate(45 15 15)" />
+                <use href="#ray" transform="rotate(90 15 15)" />
+                <use href="#ray" transform="rotate(135 15 15)" />
+                <use href="#ray" transform="rotate(180 15 15)" />
+                <use href="#ray" transform="rotate(225 15 15)" />
+                <use href="#ray" transform="rotate(270 15 15)" />
+                <use href="#ray" transform="rotate(315 15 15)" />
+            </svg> -->
+
+        <!-- Moon icon -->
+            <svg width="30" height="30" id="dark-icon">
+                <path
+                fill="currentColor"
+                d="
+                    M 23, 5
+                    A 12 12 0 1 0 23, 25
+                    A 12 12 0 0 1 23, 5"
+                />
+            </svg>
+        </button>
+        <div>
+            Powered by <a href="https://www.linkedin.com/in/murilo-meranca/" target="_blank">Murilo Meranca &#10084;</a>
+        </div>
+    </footer>
 
      <script>
+        if(localStorage.getItem("theme")==="dark"){
+                document.documentElement.classList.add('dark');
+        }
+
         document.getElementById('generateBlogButton').addEventListener('click', async () => {
             
             const youtubeLink = document.getElementById('youtubeLink').value;
@@ -140,6 +192,16 @@
                 alert("Please enter a YouTube link.");
             }
         });
+        document.getElementById('switch-theme').addEventListener('click', async () => {
+            if(localStorage.getItem("theme")==="dark"){
+                localStorage.setItem("theme", "light")
+                document.documentElement.classList.remove('dark');
+            } else{
+                localStorage.setItem("theme", "dark")
+                document.documentElement.classList.add('dark');
+            }
+        })
+        
      </script>
 </body>
 </html>

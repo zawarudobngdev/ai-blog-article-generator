@@ -5,14 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class', /* 'class' or 'media', we use 'class' to enable dark mode manually */
+        }
+    </script>
 </head>
-<body class="bg-gray-100 font-sans antialiased">
+<body class="flex flex-col min-h-screen bg-gray-100 font-sans antialiased dark:bg-black">
+    
     <!-- Navbar -->
-    <nav class="bg-blue-800 p-4 text-white flex justify-between">
+    <nav class="bg-blue-800 p-4 text-white flex justify-between navbar">
         <div>
             <h1 class="text-3xl font-bold">AI Blog Generator</h1>
         </div>
-        <div>
+        <div class="flex gap-2 white items-center whitespace-nowrap flex-wrap">
             <a href="login" class="text-white border p-1 rounded hover:underline">Login</a>
             <a href="signup" class="text-white border p-1 rounded hover:underline">Sign Up</a>
         </div>
@@ -20,11 +27,11 @@
     <br>
 
     <!-- Main content -->
-    <div class="flex items-center justify-center h-screen">
-        <div class="bg-white p-8 shadow-md rounded-lg max-w-md w-full">
+    <div class="flex-grow container mx-auto mt-10 px-4 sm:px-0">
+        <div class="max-w-3xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md flex flex-col"">
 
             <!-- Login form -->
-            <form class="space-y-4" action="" method="POST">
+            <form class="space-y-4 dark:text-gray-300" action="" method="POST">
                 {% csrf_token %}
 
                 {% if error_message %}
@@ -35,13 +42,13 @@
                     </div>
                 {% endif %}
 
-                <h2 class="text-xl font-semibold">Login</h2>
+                <h2 class="text-xl font-semibold dark:text-gray-100">Login</h2>
                 <div>
-                    <label for="username" class="block mb-1 font-medium">Username</label>
+                    <label for="username" class="block mb-1 font-medium dark:text-gray-300">Username</label>
                     <input type="text" id="username" name="username" placeholder="Enter your username" class="w-full p-2 border rounded">
                 </div>
                 <div>
-                    <label for="password" class="block mb-1 font-medium">Password</label>
+                    <label for="password" class="block mb-1 font-medium dark:text-gray-300">Password</label>
                     <input type="password" id="password" name="password" placeholder="Enter your password" class="w-full p-2 border rounded">
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-800">Login</button>
@@ -49,6 +56,63 @@
             </form>
         </div>
     </div>
+
+    <footer class="text-center p-4 text-black mt-6 dark:text-white">
+        <button id="switch-theme">
+            <!-- Sun icon -->
+            <!-- <svg width="30" height="30" id="light-icon">
+                <circle cx="15" cy="15" r="6" fill="currentColor" />
+            
+                <line
+                id="ray"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                x1="15"
+                y1="1"
+                x2="15"
+                y2="4"
+                ></line>
+        
+                <use href="#ray" transform="rotate(45 15 15)" />
+                <use href="#ray" transform="rotate(90 15 15)" />
+                <use href="#ray" transform="rotate(135 15 15)" />
+                <use href="#ray" transform="rotate(180 15 15)" />
+                <use href="#ray" transform="rotate(225 15 15)" />
+                <use href="#ray" transform="rotate(270 15 15)" />
+                <use href="#ray" transform="rotate(315 15 15)" />
+            </svg> -->
+
+        <!-- Moon icon -->
+            <svg width="30" height="30" id="dark-icon">
+                <path
+                fill="currentColor"
+                d="
+                    M 23, 5
+                    A 12 12 0 1 0 23, 25
+                    A 12 12 0 0 1 23, 5"
+                />
+            </svg>
+        </button>
+        <div>
+            Powered by <a href="https://www.linkedin.com/in/murilo-meranca/" target="_blank">Murilo Meranca &#10084;</a>
+        </div>
+    </footer>
+
+    <script>
+        if(localStorage.getItem("theme")==="dark"){
+                document.documentElement.classList.add('dark');
+        }
+        document.getElementById('switch-theme').addEventListener('click', async () => {
+            if(localStorage.getItem("theme")==="dark"){
+                localStorage.setItem("theme", "light")
+                document.documentElement.classList.remove('dark');
+            } else{
+                localStorage.setItem("theme", "dark")
+                document.documentElement.classList.add('dark');
+            }
+        })
+    </script>
 
 </body>
 </html>
