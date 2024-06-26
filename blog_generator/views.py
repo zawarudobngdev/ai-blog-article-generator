@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from pytube import YouTube
 
 from .models import BlogPost
+import uuid
 
 
 # Create your views here.
@@ -31,8 +32,9 @@ def download_audio(link):
     yt = YouTube(link)
     video = yt.streams.filter(only_audio=True).first()
     out_file = video.download(output_path=settings.MEDIA_ROOT)
-    base, ext = os.path.splitext(out_file)
-    new_file = base + '.mp3'
+
+    new_file = uuid.uuid4() + '.mp3'
+
     os.rename(out_file, new_file)
     return new_file
 
@@ -40,7 +42,7 @@ def download_audio(link):
 def get_transcription(link):
     audio_file = download_audio(link)
 
-    aai.settings.api_key = "assemblyai_api_key"
+    aai.settings.api_key = os.environ.get("ASSEMBLYAI_API_KEY")
 
     transcriber = aai.Transcriber()
     transcript = transcriber.transcribe(audio_file)
@@ -49,12 +51,12 @@ def get_transcription(link):
 
 
 def generate_blog_from_transcription(transcription):
-    openai.api_key = "openai_api_key"
+    openai.api_key = os.environ.get("OPENAI_API_KEY")
 
     prompt = f"Based on the following transcript from a YouTube video, write a comprehensive blog article, write it based on the transcript, but do not make it look like a YouTube video, make it look like a proper article:\n\n{transcription}\n\nArticle:"
 
     response = openai.Completion.create(
-        model="text-davinci-003",
+        model="gpt-3.5-turbo",
         prompt=prompt,
         max_tokens=1000
     )
